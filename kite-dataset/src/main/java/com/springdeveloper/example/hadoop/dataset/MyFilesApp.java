@@ -23,7 +23,7 @@ public class MyFilesApp implements CommandLineRunner {
 
     private List<FileInfo> fileList = new ArrayList<FileInfo>();
 
-	private long count;
+    private long count;
 
     public static void main(String[] args) {
         SpringApplication.run(MyFilesApp.class, args);
@@ -39,14 +39,14 @@ public class MyFilesApp implements CommandLineRunner {
         System.out.println("Reading from local " + homeDir);
         System.out.println("Writing to HDFS " + path);
         init(path);
-		File f = new File(homeDir);
-		processFile(f);
-		writeFileList();
+        File f = new File(homeDir);
+        processFile(f);
+        writeFileList();
         writer.close();
-		System.out.println("Done!");
+        System.out.println("Done!");
     }
 
-	private void init(String path) throws Exception {
+    private void init(String path) throws Exception {
         Configuration conf = new Configuration();
         conf.set("fs.defaultFS", "hdfs://localhost:8020");
         DatasetRepository datasetRepository = new FileSystemDatasetRepository.Builder()
@@ -65,29 +65,29 @@ public class MyFilesApp implements CommandLineRunner {
         writer.open();
     }
 
-	private void processFile(File file) {
-		if (file.isDirectory()) {
-			for (File f : file.listFiles()) {
-				processFile(f);
-			}
-		} else {
-			SimpleDateFormat sdf = new SimpleDateFormat("YYYY");
-			String year = sdf.format(new Date(file.lastModified())).substring(3,4);
-			fileList.add(new FileInfo(file.getParent(), file.getName(), year, file.length(), file.lastModified()));
-			if (fileList.size() >= 100000) {
-				writeFileList();
-			}
-		}
-	}
+    private void processFile(File file) {
+        if (file.isDirectory()) {
+            for (File f : file.listFiles()) {
+                processFile(f);
+            }
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat("YYYY");
+            String year = sdf.format(new Date(file.lastModified())).substring(3, 4);
+            fileList.add(new FileInfo(file.getParent(), file.getName(), year, file.length(), file.lastModified()));
+            if (fileList.size() >= 100000) {
+                writeFileList();
+            }
+        }
+    }
 
-	private void writeFileList() {
-		count = count + fileList.size();
-		System.out.println("Writing " + count + " ...");
+    private void writeFileList() {
+        count = count + fileList.size();
+        System.out.println("Writing " + count + " ...");
         for (FileInfo f : fileList) {
             writer.write(f);
         }
         writer.flush();
         fileList.clear();
-	}
+    }
 
 }
