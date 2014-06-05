@@ -52,8 +52,8 @@ public class MyFilesApp implements CommandLineRunner {
         DatasetRepository datasetRepository = new FileSystemDatasetRepository.Builder()
                 .rootDirectory(new URI(path)).configuration(conf).build();
         Schema schema = ReflectData.get().getSchema(FileInfo.class);
-//        PartitionStrategy partitionStrategy = new PartitionStrategy.Builder().hash("year", "HASH", 5).build();
-        PartitionStrategy partitionStrategy = new PartitionStrategy.Builder().identity("year", "ID", 10).build();
+//        PartitionStrategy partitionStrategy = new PartitionStrategy.Builder().hash("pkey", "HASH", 5).build();
+        PartitionStrategy partitionStrategy = new PartitionStrategy.Builder().identity("pkey", "ID", 10).build();
         DatasetDescriptor descriptor = new DatasetDescriptor.Builder()
                 .schema(schema)
                 .format(Formats.AVRO)
